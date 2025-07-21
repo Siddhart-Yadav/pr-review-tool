@@ -57,6 +57,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pyinstaller
         pip install -r requirements.txt
+        pip install --upgrade setuptools wheel
     
     - name: Debug - List installed packages
       run: |
@@ -68,15 +69,23 @@ jobs:
         ls -la
         cat main.py | head -10
     
+    - name: Debug - Test imports
+      run: |
+        python -c "import typer; print('typer imported successfully')"
+        python -c "import httpx; print('httpx imported successfully')"
+        python -c "import rich; print('rich imported successfully')"
+        python -c "import openpyxl; print('openpyxl imported successfully')"
+        python -c "from adapters.driving.cli import app; print('CLI imported successfully')"
+    
     - name: Build executable (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        pyinstaller --onefile --name pr-review.exe main.py --hidden-import httpx --hidden-import rich --hidden-import typer --hidden-import openpyxl
+        pyinstaller --onefile --name pr-review.exe main.py --hidden-import typer --hidden-import httpx --hidden-import rich --hidden-import openpyxl --hidden-import click --hidden-import asyncio --hidden-import json --hidden-import datetime --hidden-import pathlib --collect-all typer --collect-all httpx --collect-all rich --collect-all openpyxl
     
     - name: Build executable (Unix)
       if: matrix.os != 'windows-latest'
       run: |
-        pyinstaller --onefile --name pr-review main.py --hidden-import httpx --hidden-import rich --hidden-import typer --hidden-import openpyxl
+        pyinstaller --onefile --name pr-review main.py --hidden-import typer --hidden-import httpx --hidden-import rich --hidden-import openpyxl --hidden-import click --hidden-import asyncio --hidden-import json --hidden-import datetime --hidden-import pathlib --collect-all typer --collect-all httpx --collect-all rich --collect-all openpyxl
     
     - name: Debug - Check build output
       run: |
