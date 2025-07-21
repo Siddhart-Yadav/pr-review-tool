@@ -58,21 +58,39 @@ jobs:
         pip install pyinstaller
         pip install -r requirements.txt
     
-    - name: Build executable
+    - name: Debug - List installed packages
       run: |
-        if [ "$RUNNER_OS" = "Windows" ]; then
-          pyinstaller --onefile --name pr-review.exe main.py
-        else
-          pyinstaller --onefile --name pr-review main.py
-        fi
+        pip list
+        python --version
     
-    - name: Upload executable
+    - name: Debug - Check main.py exists
+      run: |
+        ls -la
+        cat main.py | head -10
+    
+    - name: Build executable (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        pyinstaller --onefile --name pr-review.exe main.py
+    
+    - name: Build executable (Unix)
+      if: matrix.os != 'windows-latest'
+      run: |
+        pyinstaller --onefile --name pr-review main.py
+    
+    - name: Upload executable (Windows)
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: pr-review-windows
+        path: dist/pr-review.exe
+    
+    - name: Upload executable (Unix)
+      if: matrix.os != 'windows-latest'
       uses: actions/upload-artifact@v4
       with:
         name: pr-review-${{ matrix.os }}
-        path: |
-          dist/pr-review*
-          dist/pr-review.exe
+        path: dist/pr-review
 
   publish:
     needs: [build, build-executables]
@@ -92,11 +110,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install build twine
     
-    - name: Download build artifacts
+    - name: Download package artifacts
       uses: actions/download-artifact@v4
       with:
         name: dist-3.10
         path: dist/
+    
+    - name: Download executable artifacts
+      uses: actions/download-artifact@v4
+      with:
+        pattern: pr-review-*
+        path: executables/
     
     - name: Publish to GitHub Packages
       env:
@@ -108,9 +132,9 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          dist/pr-review-ubuntu-latest
-          dist/pr-review-windows-latest
-          dist/pr-review-macos-latest
+          executables/pr-review-ubuntu-latest/pr-review
+          executables/pr-review-macos-latest/pr-review
+          executables/pr-review-windows/pr-review.exe
         generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
