@@ -100,9 +100,9 @@ jobs:
         echo "=== Directory contents ==="
         dir
         echo "=== Dist directory contents ==="
-        if exist dist dir dist || echo "dist directory not found"
+        if (Test-Path dist) { dir dist } else { echo "dist directory not found" }
         echo "=== Build directory contents ==="
-        if exist build dir build || echo "build directory not found"
+        if (Test-Path build) { dir build } else { echo "build directory not found" }
     
     - name: Debug - Check build output (Unix)
       if: matrix.os != 'windows-latest'
