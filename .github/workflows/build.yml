@@ -158,11 +158,19 @@ jobs:
         pattern: pr-review-*
         path: executables/
     
-    - name: Publish to GitHub Packages
+    - name: Debug - Check downloaded artifacts
+      run: |
+        echo "=== Package artifacts ==="
+        ls -la dist/
+        echo "=== Executable artifacts ==="
+        find executables/ -type f -name "*" 2>/dev/null || echo "No executables found"
+    
+    - name: Try Publish to GitHub Packages
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        python -m twine upload --repository github dist/*
+        echo "Attempting to publish to GitHub Packages..."
+        python -m twine upload --repository github dist/* || echo "Package publishing failed, continuing with release creation"
     
     - name: Create Release
       uses: softprops/action-gh-release@v1
@@ -172,5 +180,7 @@ jobs:
           executables/pr-review-macos-latest/pr-review
           executables/pr-review-windows/pr-review.exe
         generate_release_notes: true
+        draft: false
+        prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
