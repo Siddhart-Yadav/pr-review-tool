@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pr-review-tool"
+version = "1.0.0"
+description = "A CLI tool for analyzing GitHub pull requests with detailed review information"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Siddhart-Yadav", email = "siddharthyadav555@gmail.com"}
+]
+keywords = ["github", "pull-request", "cli", "review", "analysis"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "httpx>=0.24.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "openpyxl>=3.1.0",
+]
+
+[project.scripts]
+pr-review = "main:app"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/pr-review-tool"
+Repository = "https://github.com/yourusername/pr-review-tool"
+Issues = "https://github.com/yourusername/pr-review-tool/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["adapters*", "application*", "domain*", "ports*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.md"] 
