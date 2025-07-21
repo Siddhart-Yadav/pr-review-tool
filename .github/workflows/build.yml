@@ -173,6 +173,19 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo "Attempting to publish to GitHub Packages..."
+        
+        # Configure twine for GitHub Packages
+        cat > ~/.pypirc << EOF
+        [distutils]
+        index-servers = github
+        
+        [github]
+        repository = https://github.com/${{ github.repository }}/packages/pypi
+        username = ${{ github.actor }}
+        password = ${{ secrets.GITHUB_TOKEN }}
+        EOF
+        
+        # Try to publish
         python -m twine upload --repository github dist/* || echo "Package publishing failed, continuing with release creation"
     
     - name: Create Release
