@@ -176,48 +176,28 @@ jobs:
         python -m twine upload --repository github dist/* || echo "Package publishing failed, continuing with release creation"
     
     - name: Create Release
-      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref_name }}
-        release_name: Release ${{ github.ref_name }}
-        body: |
-          PR Review Tool Release ${{ github.ref_name }}
-          
-          ## Executables
-          - Linux: pr-review
-          - macOS: pr-review  
-          - Windows: pr-review.exe
-        draft: false
-        prerelease: false
-    
-    - name: Upload Release Assets
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./executables/pr-review-ubuntu-latest/pr-review
-        asset_name: pr-review-linux
-        asset_content_type: application/octet-stream
-    
-    - name: Upload Release Assets (macOS)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./executables/pr-review-macos-latest/pr-review
-        asset_name: pr-review-macos
-        asset_content_type: application/octet-stream
-    
-    - name: Upload Release Assets (Windows)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./executables/pr-review-windows/pr-review.exe
-        asset_name: pr-review-windows.exe
-        asset_content_type: application/octet-stream 
+      run: |
+        # Create release with GitHub CLI
+        gh release create ${{ github.ref_name }} \
+          --title "Release ${{ github.ref_name }}" \
+          --notes "PR Review Tool Release ${{ github.ref_name }}
+        
+        ## Executables
+        - Linux: pr-review
+        - macOS: pr-review  
+        - Windows: pr-review.exe" \
+          --draft=false \
+          --prerelease=false
+        
+        # Upload executables to the release
+        if [ -f "executables/pr-review-ubuntu-latest/pr-review" ]; then
+          gh release upload ${{ github.ref_name }} executables/pr-review-ubuntu-latest/pr-review --clobber
+        fi
+        if [ -f "executables/pr-review-macos-latest/pr-review" ]; then
+          gh release upload ${{ github.ref_name }} executables/pr-review-macos-latest/pr-review --clobber
+        fi
+        if [ -f "executables/pr-review-windows/pr-review.exe" ]; then
+          gh release upload ${{ github.ref_name }} executables/pr-review-windows/pr-review.exe --clobber
+        fi 
