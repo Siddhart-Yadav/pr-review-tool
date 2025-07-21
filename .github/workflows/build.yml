@@ -64,7 +64,14 @@ jobs:
         pip list
         python --version
     
-    - name: Debug - Check main.py exists
+    - name: Debug - Check main.py exists (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        dir
+        type main.py | head -10
+    
+    - name: Debug - Check main.py exists (Unix)
+      if: matrix.os != 'windows-latest'
       run: |
         ls -la
         cat main.py | head -10
@@ -87,7 +94,18 @@ jobs:
       run: |
         pyinstaller --onefile --name pr-review main.py --hidden-import typer --hidden-import httpx --hidden-import rich --hidden-import openpyxl --hidden-import click --hidden-import asyncio --hidden-import json --hidden-import datetime --hidden-import pathlib --hidden-import adapters.driving.cli --hidden-import adapters.driven.github_api --hidden-import adapters.driven.report_writers --hidden-import adapters.driven.excel_report_writer --hidden-import application.report_service --hidden-import domain.models --hidden-import ports.github_port --hidden-import ports.report_output_port
     
-    - name: Debug - Check build output
+    - name: Debug - Check build output (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        echo "=== Directory contents ==="
+        dir
+        echo "=== Dist directory contents ==="
+        if exist dist dir dist || echo "dist directory not found"
+        echo "=== Build directory contents ==="
+        if exist build dir build || echo "build directory not found"
+    
+    - name: Debug - Check build output (Unix)
+      if: matrix.os != 'windows-latest'
       run: |
         echo "=== Directory contents ==="
         ls -la
