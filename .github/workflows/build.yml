@@ -80,12 +80,12 @@ jobs:
     - name: Build executable (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        pyinstaller --onefile --name pr-review.exe main.py --hidden-import typer --hidden-import httpx --hidden-import rich --hidden-import openpyxl --hidden-import click --hidden-import asyncio --hidden-import json --hidden-import datetime --hidden-import pathlib --collect-all typer --collect-all httpx --collect-all rich --collect-all openpyxl
+        pyinstaller --onefile --name pr-review.exe main.py --hidden-import typer --hidden-import httpx --hidden-import rich --hidden-import openpyxl --hidden-import click --hidden-import asyncio --hidden-import json --hidden-import datetime --hidden-import pathlib --hidden-import adapters.driving.cli --hidden-import adapters.driven.github_api --hidden-import adapters.driven.report_writers --hidden-import adapters.driven.excel_report_writer --hidden-import application.report_service --hidden-import domain.models --hidden-import ports.github_port --hidden-import ports.report_output_port
     
     - name: Build executable (Unix)
       if: matrix.os != 'windows-latest'
       run: |
-        pyinstaller --onefile --name pr-review main.py --hidden-import typer --hidden-import httpx --hidden-import rich --hidden-import openpyxl --hidden-import click --hidden-import asyncio --hidden-import json --hidden-import datetime --hidden-import pathlib --collect-all typer --collect-all httpx --collect-all rich --collect-all openpyxl
+        pyinstaller --onefile --name pr-review main.py --hidden-import typer --hidden-import httpx --hidden-import rich --hidden-import openpyxl --hidden-import click --hidden-import asyncio --hidden-import json --hidden-import datetime --hidden-import pathlib --hidden-import adapters.driving.cli --hidden-import adapters.driven.github_api --hidden-import adapters.driven.report_writers --hidden-import adapters.driven.excel_report_writer --hidden-import application.report_service --hidden-import domain.models --hidden-import ports.github_port --hidden-import ports.report_output_port
     
     - name: Debug - Check build output
       run: |
