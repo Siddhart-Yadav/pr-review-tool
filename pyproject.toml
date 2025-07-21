@@ -35,9 +35,9 @@ dependencies = [
 pr-review = "main:app"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/pr-review-tool"
-Repository = "https://github.com/yourusername/pr-review-tool"
-Issues = "https://github.com/yourusername/pr-review-tool/issues"
+Homepage = "https://github.com/Siddhart-Yadav/pr-review-tool"
+Repository = "https://github.com/Siddhart-Yadav/pr-review-tool"
+Issues = "https://github.com/Siddhart-Yadav/pr-review-tool/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
