@@ -5,16 +5,14 @@ from application.report_service import filter_prs_by_date, calculate_pr_duration
 
 def make_pr(created, closed=None):
     return PullRequest(
-        number=1,
+        id=1,
         title="Test PR",
-        user="testuser",
-        created_at=created,
-        closed_at=closed,
-        merged_at=None,
-        state="closed",
-        url="http://example.com",
+        author="testuser",
+        created_at=created.isoformat(),
+        closed_at=closed.isoformat() if closed else None,
         reviews=[],
-        comments=[]
+        pr_comments=[],
+        state="closed"
     )
 
 def test_filter_prs_by_date_includes_within_range():
@@ -24,6 +22,7 @@ def test_filter_prs_by_date_includes_within_range():
     prs = [pr1, pr2, pr3]
     since = datetime.datetime(2024, 6, 1)
     until = datetime.datetime(2024, 6, 30)
+    # Convert since/until to isoformat for comparison
     filtered = filter_prs_by_date(prs, since, until)
     assert pr1 in filtered
     assert pr2 in filtered
