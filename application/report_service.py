@@ -6,9 +6,10 @@ def filter_prs_by_date(prs, since, until):
         return prs
     filtered = []
     for pr in prs:
-        if since and pr.created_at < since:
+        pr_created = datetime.datetime.fromisoformat(pr.created_at)
+        if since and pr_created < since:
             continue
-        if until and pr.created_at > until:
+        if until and pr_created > until:
             continue
         filtered.append(pr)
     return filtered
